@@ -100,7 +100,11 @@ const LaunchRequestHandler = {
       session.indice = 0;
       h.attributesManager.setSessionAttributes(session);
 
-      const ultima = noticias[0];
+      if (!noticias || noticias.length === 0) {
+  return h.responseBuilder.speak('No pude obtener noticias de Expreso en este momento. Intenta de nuevo.').getResponse();
+}
+const ultima = noticias[0];
+const fecha = ultima.fecha ? `del ${ultima.fecha}` : '';
       const fecha = ultima.fecha ? `del ${ultima.fecha}` : '';
       const speak =
         `Bienvenido a Expreso. ` +
