@@ -319,7 +319,7 @@ const skill = Alexa.SkillBuilders.custom()
 
 const adapter = new ExpressAdapter(skill, false, false);
 
-app.use(express.json());
+const adapter = new ExpressAdapter(skill, false, false);
 app.post('/', adapter.getRequestHandlers());
 app.get('/', (req, res) => res.send('Alexa Expreso Skill funcionando!'));
 app.listen(PORT, () => console.log(`Servidor corriendo en puerto ${PORT}`));
