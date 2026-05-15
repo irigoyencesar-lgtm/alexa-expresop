@@ -323,8 +323,6 @@ app.post('/', adapter.getRequestHandlers());
 app.get('/', (req, res) => res.send('Alexa Expreso Skill funcionando!'));
 app.listen(PORT, () => console.log(`Servidor corriendo en puerto ${PORT}`));
 
-app.post('/', adapter.getRequestHandlers());
-app.get('/', (req, res) => res.send('Alexa Expreso Skill funcionando!'));
-app.listen(PORT, () => console.log(`Servidor corriendo en puerto ${PORT}`));
+
 
 
