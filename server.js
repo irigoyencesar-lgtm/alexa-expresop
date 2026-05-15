@@ -317,7 +317,6 @@ const skill = Alexa.SkillBuilders.custom()
   .addErrorHandlers(ErrorHandler)
   .create();
 
-const adapter = new ExpressAdapter(skill, false, false);
 
 const adapter = new ExpressAdapter(skill, false, false);
 app.post('/', adapter.getRequestHandlers());
