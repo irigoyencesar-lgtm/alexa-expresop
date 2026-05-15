@@ -6,7 +6,7 @@ const https = require('https');
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-const RSS_URL = 'https://www.expreso.ec/rss/';
+const RSS_URL = 'https://www.expreso.ec/rss/deportes.xml';
 
 function httpGet(url) {
   return new Promise((resolve, reject) => {
