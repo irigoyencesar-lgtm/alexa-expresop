@@ -103,10 +103,13 @@ const LaunchRequestHandler = {
       if (!noticias || noticias.length === 0) {
   return h.responseBuilder.speak('No pude obtener noticias de Expreso en este momento. Intenta de nuevo.').getResponse();
 }
+if (!noticias || noticias.length === 0) {
+  return h.responseBuilder.speak('No pude obtener noticias de Expreso en este momento. Intenta de nuevo.').getResponse();
+}
+}
 const ultima = noticias[0];
 const fecha = ultima.fecha ? `del ${ultima.fecha}` : '';
-      const fecha = ultima.fecha ? `del ${ultima.fecha}` : '';
-      const speak =
+const speak =
         `Bienvenido a Expreso. ` +
         `La noticia más reciente ${fecha} es: ${ultima.titulo}. ` +
         `${ultima.resumen} ` +
