@@ -23,15 +23,19 @@ function httpGet(url) {
   return new Promise((resolve, reject) => {
     const options = {
       headers: {
-        'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+        'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36',
         'Accept': 'application/rss+xml, application/xml, text/xml, */*',
-        'Accept-Language': 'es-EC,es;q=0.9',
-        'Cache-Control': 'no-cache'
+        'Accept-Language': 'es-EC,es;q=0.9'
       }
     };
     https.get(url, options, (res) => {
       if (res.statusCode === 301 || res.statusCode === 302) {
-        httpGet(res.headers.location).then(resolve).catch(reject);
+        let redirectUrl = res.headers.location;
+        if (redirectUrl && !redirectUrl.startsWith('http')) {
+          const base = new URL(url);
+          redirectUrl = base.origin + redirectUrl;
+        }
+        httpGet(redirectUrl).then(resolve).catch(reject);
         return;
       }
       let data = '';
