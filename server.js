@@ -78,8 +78,17 @@ async function fetchNoticias(categoria) {
   if (categoria && RSS_URLS[categoria.toLowerCase()]) {
     url = RSS_URLS[categoria.toLowerCase()];
   }
-  const xml = await httpGet(url);
-  return parseRSS(xml);
+  console.log('Fetching URL:', url);
+  try {
+    const xml = await httpGet(url);
+    console.log('XML length:', xml.length);
+    const noticias = parseRSS(xml);
+    console.log('Noticias found:', noticias.length);
+    return noticias;
+  } catch (e) {
+    console.error('Error fetching RSS:', e.message);
+    return [];
+  }
 }
 function buildTitulares(noticias, inicio, cantidad) {
   cantidad = cantidad || 5;
