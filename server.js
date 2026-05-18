@@ -21,12 +21,25 @@ const RSS_URL_DEFAULT = 'https://www.expreso.ec/rss/actualidad.xml';
 
 function httpGet(url) {
   return new Promise((resolve, reject) => {
-    https.get(url, { headers: { 
-      'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
-      'Accept': 'application/rss+xml, application/xml, text/xml, */*',
-      'Accept-Language': 'es-EC,es;q=0.9',
-      'Cache-Control': 'no-cache'
-    } }, (res) => {
+    const options = {
+      headers: {
+        'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+        'Accept': 'application/rss+xml, application/xml, text/xml, */*',
+        'Accept-Language': 'es-EC,es;q=0.9',
+        'Cache-Control': 'no-cache'
+      }
+    };
+    https.get(url, options, (res) => {
+      if (res.statusCode === 301 || res.statusCode === 302) {
+        httpGet(res.headers.location).then(resolve).catch(reject);
+        return;
+      }
+      let data = '';
+      res.on('data', chunk => data += chunk);
+      res.on('end', () => resolve(data));
+    }).on('error', reject);
+  });
+}
 
 function parseRSS(xml) {
   const items = [];
@@ -35,7 +48,7 @@ function parseRSS(xml) {
   while ((match = itemRegex.exec(xml)) !== null) {
     const block = match[1];
     const get = (tag) => {
-      const r = new RegExp(`<${tag}[^>]*><!\\[CDATA\\[([\\s\\S]*?)\\]\\]><\\/${tag}>|<${tag}[^>]*>([\\s\\S]*?)<\\/${tag}>`, 'i');
+      const r = new RegExp('<' + tag + '[^>]*><!\\[CDATA\\[([\\s\\S]*?)\\]\\]><\\/' + tag + '>|<' + tag + '[^>]*>([\\s\\S]*?)<\\/' + tag + '>', 'i');
       const m = r.exec(block);
       return m ? (m[1] || m[2] || '').trim() : '';
     };
@@ -89,6 +102,7 @@ async function fetchNoticias(categoria) {
     return [];
   }
 }
+
 function buildTitulares(noticias, inicio, cantidad) {
   cantidad = cantidad || 5;
   const lote = noticias.slice(inicio, inicio + cantidad);
@@ -112,13 +126,13 @@ const LaunchRequestHandler = {
       }
       const ultima = noticias[0];
       const fecha = ultima.fecha ? 'del ' + ultima.fecha : '';
-      const speak = 'Bienvenido a Expreso. ' +
+      const speak = 'Bienvenido al Diario Expreso Ecuador. ' +
         'La noticia mas reciente ' + fecha + ' es: ' + ultima.titulo + '. ' +
         ultima.resumen + ' ' +
         'Hay ' + noticias.length + ' noticias en total. ' +
         'Puedes decir: leer titulares, leer noticia numero dos, o noticias de deportes.';
       return h.responseBuilder.speak(speak)
-        .reprompt('Di: leer titulares, o elige una categoria.')
+        .reprompt('Di: leer titulares, o elige una categoria como deportes o politica.')
         .getResponse();
     } catch (e) {
       console.error(e);
@@ -196,7 +210,6 @@ const LeerNoticiaIntentHandler = {
       const n = noticias[numero - 1];
       const speak = 'Noticia ' + numero + ': ' + n.titulo + '. ' +
         (n.fecha ? 'Publicada el ' + n.fecha + '. ' : '') +
-        'Categoria: ' + n.categoria + '. ' +
         n.resumen + ' Deseas escuchar otra noticia?';
       h.attributesManager.setSessionAttributes(session);
       return h.responseBuilder.speak(speak)
@@ -252,7 +265,7 @@ const HelpIntentHandler = {
   },
   handle(h) {
     return h.responseBuilder
-      .speak('Puedes decir: leer titulares, leer noticia numero tres, o noticias de deportes.')
+      .speak('Puedes decir: leer titulares, leer noticia numero tres, noticias de deportes, politica, economia, opinion, entretenimiento, internacional, actualidad o guayaquil.')
       .reprompt('Como puedo ayudarte?')
       .getResponse();
   }
@@ -312,5 +325,5 @@ const skill = Alexa.SkillBuilders.custom()
 
 const adapter = new ExpressAdapter(skill, false, false);
 app.post('/', adapter.getRequestHandlers());
-app.get('/', (req, res) => res.send('Alexa Expreso Skill funcionando!'));
+app.get('/', (req, res) => res.send('Diario Expreso Ecuador Skill funcionando!'));
 app.listen(PORT, () => console.log('Servidor corriendo en puerto ' + PORT));
