@@ -71,16 +71,13 @@ function formatearFecha(pubDate) {
 }
 
 async function fetchNoticias(categoria) {
-  const xml = await httpGet(RSS_URL);
-  let noticias = parseRSS(xml);
-  if (categoria && categoria.toLowerCase() !== 'todas') {
-    noticias = noticias.filter(n =>
-      n.categoria.toLowerCase().includes(categoria.toLowerCase())
-    );
+  let url = RSS_URL_DEFAULT;
+  if (categoria && RSS_URLS[categoria.toLowerCase()]) {
+    url = RSS_URLS[categoria.toLowerCase()];
   }
-  return noticias;
+  const xml = await httpGet(url);
+  return parseRSS(xml);
 }
-
 function buildTitulares(noticias, inicio, cantidad) {
   cantidad = cantidad || 5;
   const lote = noticias.slice(inicio, inicio + cantidad);
