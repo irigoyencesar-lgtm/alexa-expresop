@@ -6,7 +6,15 @@ const https = require('https');
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-const RSS_URL = 'https://services.expreso.ec/actualidad.xml';
+const RSS_URLS = {
+  'deportes': 'https://www.expreso.ec/rss/deportes.xml',
+  'internacional': 'https://www.expreso.ec/rss/internacional.xml',
+  'economia': 'https://www.expreso.ec/rss/economia.xml',
+  'opinion': 'https://www.expreso.ec/rss/opinion.xml',
+  'entretenimiento': 'https://www.expreso.ec/rss/entretenimiento.xml',
+  'todas': 'https://www.expreso.ec/rss/deportes.xml'
+};
+const RSS_URL_DEFAULT = 'https://www.expreso.ec/rss/deportes.xml';
 
 function httpGet(url) {
   return new Promise((resolve, reject) => {
