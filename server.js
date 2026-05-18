@@ -21,13 +21,12 @@ const RSS_URL_DEFAULT = 'https://www.expreso.ec/rss/actualidad.xml';
 
 function httpGet(url) {
   return new Promise((resolve, reject) => {
-    https.get(url, { headers: { 'User-Agent': 'AlexaSkill/1.0' } }, (res) => {
-      let data = '';
-      res.on('data', chunk => data += chunk);
-      res.on('end', () => resolve(data));
-    }).on('error', reject);
-  });
-}
+    https.get(url, { headers: { 
+      'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+      'Accept': 'application/rss+xml, application/xml, text/xml, */*',
+      'Accept-Language': 'es-EC,es;q=0.9',
+      'Cache-Control': 'no-cache'
+    } }, (res) => {
 
 function parseRSS(xml) {
   const items = [];
