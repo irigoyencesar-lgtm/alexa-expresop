@@ -12,9 +12,12 @@ const RSS_URLS = {
   'economia': 'https://www.expreso.ec/rss/economia.xml',
   'opinion': 'https://www.expreso.ec/rss/opinion.xml',
   'entretenimiento': 'https://www.expreso.ec/rss/entretenimiento.xml',
-  'todas': 'https://www.expreso.ec/rss/deportes.xml'
+  'actualidad': 'https://www.expreso.ec/rss/actualidad.xml',
+  'politica': 'https://www.expreso.ec/rss/politica.xml',
+  'guayaquil': 'https://www.expreso.ec/rss/guayaquil.xml',
+  'todas': 'https://www.expreso.ec/rss/actualidad.xml'
 };
-const RSS_URL_DEFAULT = 'https://www.expreso.ec/rss/deportes.xml';
+const RSS_URL_DEFAULT = 'https://www.expreso.ec/rss/actualidad.xml';
 
 function httpGet(url) {
   return new Promise((resolve, reject) => {
